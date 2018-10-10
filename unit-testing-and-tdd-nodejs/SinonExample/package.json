@@ -1,0 +1,21 @@
+{
+  "name": "sinonexample",
+  "version": "1.0.0",
+  "description": "",
+  "main": "getUsers.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "chai": "^4.2.0",
+    "mocha": "^5.2.0",
+    "request": "^2.88.0",
+    "sinon": "^6.3.5",
+    "sinon-chai": "^3.2.0"
+  }
+}
