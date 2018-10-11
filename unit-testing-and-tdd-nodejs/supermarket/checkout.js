@@ -1,3 +1,4 @@
+const fs = require("fs");
 module.exports = class Checkout {
   constructor() {
     this.prices = {};
@@ -41,5 +42,17 @@ module.exports = class Checkout {
       cnt: itemCount,
       price: discountPrice
     };
+  }
+  getPrices(path){
+    fs.readFile(path, "utf-8", function(err, data){
+      if(err){
+        throw "File Not Found Error";
+      } else {
+        let itemPrices = JSON.parse(data);
+        for(let item in itemPrices){
+          this.prices[item] = itemPrices[item]
+        } 
+      }
+    });
   }
 };
