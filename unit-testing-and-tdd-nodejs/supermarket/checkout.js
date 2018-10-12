@@ -1,4 +1,6 @@
 const fs = require("fs");
+const { promisify } = require("util");
+
 module.exports = class Checkout {
   constructor() {
     this.prices = {};
@@ -43,16 +45,19 @@ module.exports = class Checkout {
       price: discountPrice
     };
   }
-  getPrices(path){
-    fs.readFile(path, "utf-8", function(err, data){
-      if(err){
-        throw "File Not Found Error";
-      } else {
-        let itemPrices = JSON.parse(data);
-        for(let item in itemPrices){
-          this.prices[item] = itemPrices[item]
-        } 
-      }
-    });
+  async updatePrices(path){
+    const readFileAsync = promisify(fs.readFile);
+    try {
+      let data = await readFileAsync(path, "utf-8");
+      let itemPrices = JSON.parse(data);
+      for(let item in itemPrices){
+        this.prices[item] = itemPrices[item];
+      } 
+    } catch (error) {
+      throw new Error("file not found");
+    }
+  }
+  getPrices(){
+    return this.prices;
   }
 };
