@@ -1,8 +1,11 @@
 const chai = require("chai");
 const should = chai.should();
+const expect = chai.expect;
 const sinon = require('sinon');
-var sinonChai = require("sinon-chai");
+const sinonChai = require("sinon-chai");
 chai.use(sinonChai);
+const chaiAsPromised = require("chai-as-promised");
+chai.use(chaiAsPromised);
 const Checkout = require("../checkout");
 const fs = require("fs");
 // x can create an instance of checkout class
@@ -64,11 +67,23 @@ describe("Checkout", _ => {
     prices.should.deep.equal(JSON.parse('{"a":"2","b":2,"d":"1","c":"4"}'));
     sinon.restore();
   });
-  it("should throw an error if file does not exist", function(done){
-    should.Throw(_ => {
-      checkout.updatePrices("./notexist.json");
-      done();
-    });
+  if("should throw an error if file does not exist using promise return", function(){
+    // return expect(checkout.updatePrices("./prices.jsn")).to.be.rejected;
+    return should.Throw( _ => checkout.updatePrices("./prices.jsn"));
   });
-      
+  // or do above test like this
+  it("should throw an error if file does not exist using async await", async function(){
+    await (async _ => {
+      try {
+          await checkout.updatePrices("./pri.json");
+      } catch (err) {
+          should.Throw(_ => { throw err });
+          // expect(() => { throw err }).to.throw();
+          return;
+      }
+      // do what Chai normally does when no error is thrown
+      expect(() => {}).to.throw();
+      should.Throw(_ => {}).to.Throw();
+   })();
+  });
 });
