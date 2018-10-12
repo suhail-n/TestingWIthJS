@@ -16,7 +16,6 @@ const fs = require("fs");
 
 describe("Checkout", _ => {
   let checkout;
-
   beforeEach(function() {
     checkout = new Checkout();
     checkout.addItemPrice("a", 1);
@@ -52,16 +51,18 @@ describe("Checkout", _ => {
   it("throws an exception when an item is added without price", function() {
     should.Throw(_ => checkout.addItem("d"));
   });
-  it("should get item prices from a file", function(){
-    (async _ => {
-      const fileStub = sinon.stub(fs, "readFile").callsFake(function(path, encoding, cb){
-        cb(undefined, '{"a": "2", "d": "1", "c": "4"}');
-      });
-      await checkout.updatePrices("./prices.json");
-      fileStub.should.have.been.calledOnce;
-      checkout.getPrices().deep.equals(JSON.parse('{"a":"2","b":2,"d":"1","c":"4"}'));
-      sinon.restore();
-    })();
+  it("should get item prices from a file", async function(){
+
+    let fileStub;  
+    fileStub = sinon.stub(fs, "readFile").callsFake(function(path, encoding, cb){
+      cb(undefined, '{"a": "2", "d": "1", "c": "4"}');
+    });
+    await checkout.updatePrices("./prices.json");
+    fileStub.should.have.been.calledOnce;
+    console.log("called once");
+    let prices = checkout.getPrices();
+    prices.should.deep.equal(JSON.parse('{"a":"2","b":2,"d":"1","c":"4"}'));
+    sinon.restore();
   });
   it("should throw an error if file does not exist", function(done){
     should.Throw(_ => {
